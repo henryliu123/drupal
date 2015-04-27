@@ -1,0 +1,65 @@
+<?php 
+/**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+function lottos_help($path,$arg){
+	switch ($path) {
+    	case "admin/help#lottos":
+      		return '<p>' . t("Display lottos help") . '</p>';
+      		break;
+	}
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function lottos_block_info() {
+    $blocks['lottos'] = array(
+        // The name that will appear in the block list.
+        'info' => t('Lottos info'),
+        // Default setting.
+        'cache' => DRUPAL_CACHE_PER_ROLE,
+    );
+    return $blocks;
+}
+
+function lottos_history_numbers_block_view($type){
+    switch($type){
+        case 'Lotto':
+            $block['subject'] = t('Current History');
+            if (user_access('access content')) {
+                // Use our custom function to retrieve data.
+                $result = current_history_contents();
+                // Array to contain items for the block to render.
+                $items = array();
+                // Iterate over the resultset and format as links.
+                foreach ($result as $node) {
+                    $items[] = array(
+                        'data' => 'test',
+                    );
+                }
+                // No content in the last week.
+                if (empty($items)) {
+                    $block['content'] = t('No posts available.');
+                }
+                else {
+                    // Pass data through theme function.
+                    $block['content'] = theme('item_list', array(
+                        'items' => $items));
+                }
+            }
+            return $block;
+            break;
+    }
+}
+
+function current_history_contents(){
+    
+}

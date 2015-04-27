@@ -1,0 +1,91 @@
+<?php 
+
+/**
+ * Implements hook_uninstall
+ */
+function lottos_uninstall(){
+    drupal_uninstall_schema('lottos');
+}
+
+/**
+ * Implements hook_schema
+ */
+function lottos_schema(){
+    $schema['lottos'] = array(
+        'description' => t('Stores lottos for the lottos module.'),
+        'fields' => array(
+          'id' => array(
+            'description' => 'The primary identifier for a lotto.',
+            'type' => 'serial',
+            'unsigned' => TRUE,
+            'not null' => TRUE),
+          'type' => array(
+            'description' => 'The type of lotto.',//e.g lotto,oz lotto,powerball
+            'type' => 'varchar',
+            'length' => 20,
+            'not null' => TRUE),
+          'code' => array(
+            'description' => 'The code of this lotto.',
+            'type' => 'varchar',
+            'length' => 20,
+            'not null' => TRUE),
+          'deleted'=> array(
+            'description' => 'The record was deleted or not.',
+            'type' => 'int',
+            'size'=>'tiny',
+            'not null' => TRUE),
+        ),
+        'primary key' => array('id'),
+    );
+    
+    $schema['lottos_numbers'] = array(
+        'description' => t('Stores lotto number for the lotto.'),
+        'fields' => array(
+            'id' => array(
+                'description' => 'The primary identifier for a lotto number.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE),
+            'number' => array(
+                'description' => 'The number of this lotto.',
+                'type' => 'varchar',
+                'length' => 2,
+                'not null' => TRUE),
+            'lottoId' => array(
+                'description' => 'The id of the lotto.',
+                'type' => 'int',
+                'length' => 2,
+                'not null' => TRUE),
+        ),
+        'primary key' => array('id'),
+    );
+    
+    $schema['lottos_results'] = array(
+        'description' => t('Lotto result for the lotto.'),
+        'fields' => array(
+            'id' => array(
+                'description' => 'The primary identifier for a lotto number.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE),
+            'number' => array(
+                'description' => 'The number of this lotto.',
+                'type' => 'varchar',
+                'length' => 2,
+                'not null' => TRUE),
+            'type' => array(
+                'description' => 'The type of this lotto.',//special number or not
+                'type' => 'int',
+                'size' => 'tiny',
+                'not null' => TRUE),
+            'lottoId' => array(
+                'description' => 'The id of the lotto.',
+                'type' => 'int',
+                'length' => 2,
+                'not null' => TRUE),
+        ),
+        'primary key' => array('id'),
+    );    
+    
+    return $schema;
+}
