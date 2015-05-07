@@ -30,24 +30,20 @@ function lottos_block_info() {
     return $blocks;
 }
 
-function lottos_history_numbers_block_view($type){
+function lottos_block_view($type){
     switch($type){
-        case 'Lotto':
-            $block['subject'] = t('Current History');
+        case 'lottos':
+            $block['subject'] = t('Lottos Results');
             if (user_access('access content')) {
                 // Use our custom function to retrieve data.
-                $result = current_history_contents();
-                // Array to contain items for the block to render.
+                $result = lottos_history_contents();
                 $items = array();
-                // Iterate over the resultset and format as links.
-                foreach ($result as $node) {
-                    $items[] = array(
-                        'data' => 'test',
-                    );
+                foreach($result as $item){
+                    $items[] = array('data'=>$item->type.':'.$item->code);
                 }
                 // No content in the last week.
                 if (empty($items)) {
-                    $block['content'] = t('No posts available.');
+                    $block['content'] = t('No Lottos available.');
                 }
                 else {
                     // Pass data through theme function.
@@ -60,6 +56,29 @@ function lottos_history_numbers_block_view($type){
     }
 }
 
-function current_history_contents(){
-    
+/**
+ * Implements hook_menu().
+ */
+function lottos_menu() {
+    $items = array();
+
+    $items['admin/config/content/lottos'] = array(
+        'title' => 'Lottos Results',
+        'description' => 'Configuration for Lottos module',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('lottos_form'),
+        'access arguments' => array('access administration pages'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    return $items;
+}
+
+function lottos_history_contents(){
+    $query = db_select('lottos','n')
+    ->fields('n', array('id', 'type', 'code'))
+    ->orderBy('id', 'DESC')
+    ->execute()
+    ->fetchAll();
+    return $query;
 }

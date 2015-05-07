@@ -1,3 +1,5 @@
 name = Lottos
 description = Lotto Module
 core = 7.x
+; NEW LINE
+configure = admin/config/content/lottos
